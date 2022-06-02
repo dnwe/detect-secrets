@@ -65,7 +65,7 @@ trivy-scan-python-vulnerabilities:
 
 docker-quality-images:
 	for image_name in $(DOCKER_IMAGES_TO_SCAN) ; do												\
-		$(TRIVY) image --exit-code 1 --ignore-unfixed $(DOCKER_DOMAIN_LOCAL)/$*$${image_name};  \
+		$(TRIVY) image --exit-code 1 --ignore-unfixed --security-checks vuln $(DOCKER_DOMAIN_LOCAL)/$*$${image_name};  \
 	done																						\
 
 docker-test-images:
