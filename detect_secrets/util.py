@@ -41,8 +41,7 @@ def version_check():
                 end_yellow,
                 file=sys.stderr,
             )
-    except Exception as e:
-        print(e)
+    except Exception:
         print(
             yellow +
             'Failed to check for newer version of detect-secrets.\n' +
