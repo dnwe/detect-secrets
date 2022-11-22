@@ -17,10 +17,15 @@ def version_check():
     try:
         resp = requests.get(
             (
-                'https://detect-secrets-client-version.s3.us-south.'
-                'cloud-object-storage.appdomain.cloud/version'
+                # We need to hard-code the Cloud Object Storage service IP address
+                # since using the full URL results in on-and-off certificate errors.
+                # TODO: revert back to using https://detect-secrets-client-version.s3
+                # .us-south.cloud-object-storage.appdomain.cloud/version
+                # once cert issues are fixed by IBM Cloud.
+                'https://169.46.118.100/detect-secrets-client-version/version'
             ),
             timeout=5,  # added for COS timeout
+            verify=False,  # TODO: remove this line once COS cert issues are fixed
         )
         resp.raise_for_status()
         latest_version = parse(resp.text)
@@ -36,7 +41,8 @@ def version_check():
                 end_yellow,
                 file=sys.stderr,
             )
-    except Exception:
+    except Exception as e:
+        print(e)
         print(
             yellow +
             'Failed to check for newer version of detect-secrets.\n' +

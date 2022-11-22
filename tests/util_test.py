@@ -31,8 +31,12 @@ def test_version_check_out_of_date():
     responses.add(
         responses.GET,
         (
-            'https://detect-secrets-client-version.s3.us-south.'
-            'cloud-object-storage.appdomain.cloud/version'
+            # We need to hard-code the Cloud Object Storage service IP address
+            # since using the full URL results in on-and-off certificate errors.
+            # TODO: revert back to using https://detect-secrets-client-version.s3
+            # .us-south.cloud-object-storage.appdomain.cloud/version
+            # once cert issues are fixed by IBM Cloud.
+            'https://169.46.118.100/detect-secrets-client-version/version'
         ),
         status=200,
         body='1000000.0.0+ibm.0',
@@ -53,8 +57,12 @@ def test_version_check_not_out_of_date():
     responses.add(
         responses.GET,
         (
-            'https://detect-secrets-client-version.s3.us-south.'
-            'cloud-object-storage.appdomain.cloud/version'
+            # We need to hard-code the Cloud Object Storage service IP address
+            # since using the full URL results in on-and-off certificate errors.
+            # TODO: revert back to using https://detect-secrets-client-version.s3
+            # .us-south.cloud-object-storage.appdomain.cloud/version
+            # once cert issues are fixed by IBM Cloud.
+            'https://169.46.118.100/detect-secrets-client-version/version'
         ),
         status=200,
         body=VERSION,
@@ -70,9 +78,14 @@ def test_version_check_not_out_of_date():
 def test_verion_check_latest_version_request_fails():
     responses.add(
         responses.GET,
+        responses.GET,
         (
-            'https://detect-secrets-client-version.s3.us-south.'
-            'cloud-object-storage.appdomain.cloud/version'
+            # We need to hard-code the Cloud Object Storage service IP address
+            # since using the full URL results in on-and-off certificate errors.
+            # TODO: revert back to using https://detect-secrets-client-version.s3
+            # .us-south.cloud-object-storage.appdomain.cloud/version
+            # once cert issues are fixed by IBM Cloud.
+            'https://169.46.118.100/detect-secrets-client-version/version'
         ),
         status=404,
     )
