@@ -167,12 +167,13 @@ class TestGheDetector(object):
         )
         assert GheDetector().verify(GHE_TOKEN_NEW) == VerifiedResult.UNVERIFIED
 
-    # @responses.activate
-    # def test_verify_valid_secret_new(self):
-    #     responses.add(
-    #         responses.GET, 'https://github.ibm.com/api/v3', status=200,
-    #     )
-    # assert GheDetector().verify(GHE_TOKEN_NEW) == VerifiedResult.VERIFIED_TRUE
+    # failing
+    @responses.activate
+    def test_verify_valid_secret_new(self):
+        responses.add(
+            responses.GET, 'https://github.ibm.com/api/v3', status=200,
+        )
+        assert GheDetector().verify(GHE_TOKEN_NEW) == VerifiedResult.VERIFIED_TRUE
 
     @responses.activate
     def test_verify_unverified_secret_new(self):
