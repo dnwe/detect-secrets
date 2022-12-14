@@ -5,7 +5,8 @@ from detect_secrets.core.constants import VerifiedResult
 from detect_secrets.plugins.github_enterprise import GheDetector
 
 GHE_TOKEN_OLD = 'abcdef0123456789abcdef0123456789abcdef01'
-GHE_TOKEN_NEW = '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'
+TOKEN_STRING = 'wWPw5k4aXcaT4fNP0UcnZwJUVFk6LO0pINUx'
+GHE_TOKEN_NEW = 'ghp_'+TOKEN_STRING
 GHE_TOKEN_BYTES = b'abcdef0123456789abcdef0123456789abcdef01'
 
 class TestGheDetector(object):
@@ -65,6 +66,11 @@ class TestGheDetector(object):
             ('Authorization: token %s', False),
             # New GitHub token format
             (GHE_TOKEN_NEW, True),
+            ('gho_'+TOKEN_STRING, True),
+            ('ghu_'+TOKEN_STRING, True),
+            ('ghs_'+TOKEN_STRING, True),
+            ('ghr_'+TOKEN_STRING, True),
+            ('new_ghe_token: abcdef0123456789abcdef0123456789abcdef01', False), # missing prefix
         ],
     )
     def test_analyze_line(self, payload, should_flag):
@@ -167,7 +173,6 @@ class TestGheDetector(object):
         )
         assert GheDetector().verify(GHE_TOKEN_NEW) == VerifiedResult.UNVERIFIED
 
-    # failing
     @responses.activate
     def test_verify_valid_secret_new(self):
         responses.add(
