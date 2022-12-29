@@ -160,7 +160,7 @@ pre-commit autoupdate
 
 ### Which python versions does detect-secrets support?
 
-This tool supports Python 3.5 and above. Since Python 2 reached its end of life on January 1st, 2020, `detect-secrets` supported Python 2 until July 1st, 2020.
+This tool supports Python 3.7 and above. Since Python 2 reached its end of life on January 1st, 2020, `detect-secrets` supported Python 2 until July 1st, 2020.
 
 You can follow the guide [here](https://docs.python-guide.org/starting/installation/) to properly setup your Python 3 environment.
 
