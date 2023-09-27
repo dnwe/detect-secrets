@@ -421,7 +421,7 @@ The `detect-secrets` tool can also be run as a docker container. It supports Win
 
 You need to have Python and [install the pre-commit framework](https://pre-commit.com/#install). The docker image of `detect-secrets` saves you the effort of installing the detect-secret pip package, which would require a heavy weight compilation environment. Besides that, please also make sure you have [docker installed](https://docs.docker.com/install/).
 
-1. python [installed](https://docs.python-guide.org/starting/installation/)
+1. python [installed](https://www.python.org/downloads/)
 1. pre-commit framework [installed](https://pre-commit.com/#install)
 1. docker [installed](https://docs.docker.com/install/)
 
