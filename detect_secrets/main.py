@@ -140,6 +140,26 @@ def _scan_string(line, plugins):
     print('\n'.join(sorted(output)))
 
 
+def _update_args_from_old_baseline(args, old_baseline):
+    """update_args_from_old_baseline will set the default values for the exclude
+    and word_list commandline arguments (if they haven't been provided) to the
+    values that were previously used in the .secrets.baseline generation. Favors
+    `--exclude-files` and `--exclude-lines` CLI arguments over existing
+    baseline's regexes (if given).
+
+    :param args: output of `argparse.ArgumentParser.parse_args`
+    :param old_baseline: a dict containing the existing .secrets.baseline
+    """
+    if not args.exclude_files:
+        args.exclude_files = _get_exclude_files(old_baseline)
+
+    if not args.exclude_lines and old_baseline.get('exclude'):
+        args.exclude_lines = old_baseline.get('exclude').get('lines')
+
+    if not args.word_list_file and old_baseline.get('word_list'):
+        args.word_list_file = old_baseline['word_list']['file']
+
+
 def _perform_scan(args, plugins, automaton, word_list_hash):
     """
     :param args: output of `argparse.ArgumentParser.parse_args`
@@ -161,17 +181,10 @@ def _perform_scan(args, plugins, automaton, word_list_hash):
             automaton=automaton,
         )
 
-    # Favors `--exclude-files` and `--exclude-lines` CLI arguments
-    # over existing baseline's regexes (if given)
+    # Seed exclude CLI argument defaults from the previous values in the old
+    # baseline if found.
     if old_baseline:
-        if not args.exclude_files:
-            args.exclude_files = _get_exclude_files(old_baseline)
-
-        if not args.exclude_lines and old_baseline.get('exclude'):
-            args.exclude_lines = old_baseline['exclude']['lines']
-
-        if not args.word_list_file and old_baseline.get('word_list'):
-            args.word_list_file = old_baseline['word_list']['file']
+        _update_args_from_old_baseline(args, old_baseline)
 
     # If we have knowledge of an existing baseline file, we should use
     # that knowledge and add it to our exclude_files regex.
@@ -208,16 +221,18 @@ def _get_existing_baseline(import_filename):
         except FileNotFoundError as fnf_error:
             if fnf_error.errno == 2:  # create new baseline if not existed
                 return None
-            else:  # throw exception for other cases
-                print(
-                    'Error reading from existing baseline ' + import_filename[0],
-                    file=sys.stderr,
-                )
-                raise fnf_error
+            # throw exception for other cases
+            print(
+                'Error reading from existing baseline ' + import_filename[0],
+                file=sys.stderr,
+            )
+            raise fnf_error
     if not sys.stdin.isatty():
         stdin = sys.stdin.read().strip()
         if stdin:
             return json.loads(stdin)
+        return None
+    return None
 
 
 def _read_from_file(filename):  # pragma: no cover

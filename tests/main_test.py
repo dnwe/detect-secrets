@@ -3,8 +3,8 @@ import platform
 import shlex
 import textwrap
 from contextlib import contextmanager
+from unittest import mock
 
-import mock
 import pytest
 from testing.factories import secrets_collection_factory
 from testing.mocks import Any
@@ -236,7 +236,7 @@ class TestMain:
     def test_reads_old_baseline_from_file(self, mock_merge_baseline):
         with mock_stdin(), mock.patch(
             'detect_secrets.main._read_from_file',
-            return_value={'key': 'value'},
+            return_value={'exclude': {'files': '^.secrets.baseline$'}, 'key': 'value'},
         ) as m_read, mock.patch(
             'detect_secrets.main.write_baseline_to_file',
         ) as m_write:
@@ -246,7 +246,7 @@ class TestMain:
             assert m_write.call_args[1]['data'] == Any(dict)
 
         mock_merge_baseline.assert_called_once_with(
-            {'key': 'value'},
+            {'exclude': {'files': '^.secrets.baseline$'}, 'key': 'value'},
             Any(dict),
         )
 

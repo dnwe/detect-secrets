@@ -4,8 +4,7 @@ from collections import defaultdict
 from collections import namedtuple
 from contextlib import contextmanager
 from subprocess import CalledProcessError
-
-import mock
+from unittest import mock
 
 
 @contextmanager
